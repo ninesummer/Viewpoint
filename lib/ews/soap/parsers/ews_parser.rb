@@ -28,7 +28,7 @@ module Viewpoint::EWS::SOAP
 
     def parse(opts = {})
       opts[:response_class] ||= EwsSoapResponse
-      sax_parser.parse(@soap_resp)
+      sax_parser.parse(@soap_resp.gsub(/&#x[0-1]?[0-9a-fA-F];/, ''))
       opts[:response_class].new @sax_doc.struct
     end
 

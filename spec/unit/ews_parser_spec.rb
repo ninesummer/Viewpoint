@@ -21,4 +21,10 @@ describe "Exchange Response Parser Functionality" do
     resp.body.should == error_body
   end
 
+  it 'parses a response containing invalid xml characters' do
+    soap_resp = load_soap 'find_folder_invalid_xml', :response
+    resp = Viewpoint::EWS::SOAP::EwsParser.new(soap_resp).parse
+    resp.body.should == success_body
+  end
+
 end
