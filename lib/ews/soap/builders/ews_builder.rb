@@ -826,6 +826,47 @@ module Viewpoint::EWS::SOAP
       nbuild[NS_EWS_TYPES].IsRead(read)
     end
 
+    def contact!(item)
+      nbuild[NS_EWS_TYPES].Contact {
+        item.each_pair {|k,v|
+          self.send("#{k}!", v)
+        }
+      }
+    end
+
+    def job_title!(item)
+      nbuild[NS_EWS_TYPES].JobTitle(item)
+    end
+
+    def given_name!(item)
+      nbuild[NS_EWS_TYPES].GivenName(item)
+    end
+
+    def surname!(item)
+      nbuild[NS_EWS_TYPES].Surname(item)
+    end
+
+    def company_name!(item)
+      nbuild[NS_EWS_TYPES].CompanyName(item)
+    end
+
+    def phone_numbers!(items)
+      nbuild[NS_EWS_TYPES].PhoneNumbers {
+        items.each { |item|
+          item.each_pair { |k,v|
+            self.send("#{k}!", v)
+          }
+        }
+      }
+    end
+
+    def entry!(item)
+      nbuild[NS_EWS_TYPES].Entry { |x|
+        x.parent['Key'] = item[:key] if item[:key]
+        x.text item[:text]
+      }
+    end
+
     def calendar_item!(item)
       nbuild[NS_EWS_TYPES].CalendarItem {
         item.each_pair {|k,v|

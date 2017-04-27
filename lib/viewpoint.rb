@@ -108,6 +108,7 @@ require 'ews/templates/forward_item'
 require 'ews/templates/reply_to_item'
 require 'ews/templates/calendar_item'
 require 'ews/templates/task'
+require 'ews/templates/contact'
 
 # The proxy between the models and the web service
 require 'ews/ews_client'
