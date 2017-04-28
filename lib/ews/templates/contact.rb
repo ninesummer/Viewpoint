@@ -6,7 +6,8 @@ module Viewpoint::EWS
       PARAMETERS = %w{
         saved_item_folder_id file_as given_name company_name
         email_addresses physical_addresses phone_numbers
-        job_title surname
+        job_title department office_location manager assistant_name 
+        surname
       }.map(&:to_sym).freeze
 
       # Returns a new Contact template
@@ -51,19 +52,23 @@ module Viewpoint::EWS
             # Convert attributes
             case key
             when :email_addresses
-              # <t:EmailAddresses>
-              #   <t:Entry Key="EmailAddress1">hello@example.com</t:Entry>
-              # </t:EmailAddresses>
+              item_parameters[key] = value.each_with_index.map do |email, index|
+                item = { entry: {} }
+                item[:entry][:key] = "EmailAddress#{index + 1}"
+                item[:entry][:text] = email[:text]
+                item
+              end
             when :physical_addresses
-              # <t:PhysicalAddresses>
-              #    <t:Entry Key="Business">
-              #       <t:Street>1234 56th Ave</t:Street>
-              #       <t:City>
-              #       <t:State>
-              #       <t:CountryOrRegion>
-              #    </t:Entry>
-              # </t:PhysicalAddresses
-
+              item_parameters[key] = value.map do |address|
+                item = { entry: {} }
+                item[:entry][:key] = address[:key] if address[:key].present?
+                item[:entry][:street] = address[:street]
+                item[:entry][:city] = address[:city]
+                item[:entry][:state] = address[:state]
+                item[:entry][:country_or_region] = address[:country_or_region]
+                item[:entry][:postal_code] = address[:postal_code]
+                item
+              end
             when :phone_numbers
               item_parameters[key] = value.map do |num|
                 item = { entry: {} }

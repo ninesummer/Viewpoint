@@ -838,6 +838,22 @@ module Viewpoint::EWS::SOAP
       nbuild[NS_EWS_TYPES].JobTitle(item)
     end
 
+    def department!(item)
+      nbuild[NS_EWS_TYPES].Department(item)
+    end
+
+    def office_location!(item)
+      nbuild[NS_EWS_TYPES].OfficeLocation(item)
+    end
+
+    def manager!(item)
+      nbuild[NS_EWS_TYPES].Manager(item)
+    end
+
+    def assistant_name!(item)
+      nbuild[NS_EWS_TYPES].AssistantName(item)
+    end
+
     def given_name!(item)
       nbuild[NS_EWS_TYPES].GivenName(item)
     end
@@ -860,10 +876,56 @@ module Viewpoint::EWS::SOAP
       }
     end
 
+    def email_addresses!(items)
+      nbuild[NS_EWS_TYPES].EmailAddresses {
+        items.each { |item|
+          item.each_pair { |k,v|
+            self.send("#{k}!", v)
+          }
+        }
+      }
+    end
+
+    def physical_addresses!(items)
+      nbuild[NS_EWS_TYPES].PhysicalAddresses {
+        items.each { |item|
+          item.each_pair { |k,v|
+            self.send("#{k}!", v)
+          }
+        }
+      }
+    end
+
+    def street!(item)
+      nbuild[NS_EWS_TYPES].Street(item)
+    end
+
+    def city!(item)
+      nbuild[NS_EWS_TYPES].City(item)
+    end
+
+    def state!(item)
+      nbuild[NS_EWS_TYPES].State(item)
+    end
+
+    def country_or_region!(item)
+      nbuild[NS_EWS_TYPES].CountryOrRegion(item)
+    end
+
+    def postal_code!(item)
+      nbuild[NS_EWS_TYPES].PostalCode(item)
+    end
+
     def entry!(item)
       nbuild[NS_EWS_TYPES].Entry { |x|
-        x.parent['Key'] = item[:key] if item[:key]
-        x.text item[:text]
+        x.parent['Key'] = item.delete(:key)
+        if item[:text].present?
+          x.text item[:text]
+        else
+          item.each_pair { |k,v|
+            self.send("#{k}!", v)
+          }
+        end
       }
     end
 
