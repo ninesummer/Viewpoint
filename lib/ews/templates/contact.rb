@@ -29,7 +29,6 @@ module Viewpoint::EWS
         end
       
         structure[:items] = [{ contact: to_ews_item }]
-        puts "STRUCTURE: #{structure}"
         structure
       end
 
@@ -55,25 +54,25 @@ module Viewpoint::EWS
               item_parameters[key] = value.each_with_index.map do |email, index|
                 item = { entry: {} }
                 item[:entry][:key] = "EmailAddress#{index + 1}"
-                item[:entry][:text] = email[:text]
+                item[:entry][:text] = email[:text] if email[:text].present?
                 item
               end
             when :physical_addresses
               item_parameters[key] = value.map do |address|
                 item = { entry: {} }
                 item[:entry][:key] = address[:key] if address[:key].present?
-                item[:entry][:street] = address[:street]
-                item[:entry][:city] = address[:city]
-                item[:entry][:state] = address[:state]
-                item[:entry][:country_or_region] = address[:country_or_region]
-                item[:entry][:postal_code] = address[:postal_code]
+                item[:entry][:street] = address[:street] if address[:street].present?
+                item[:entry][:city] = address[:city] if address[:city].present?
+                item[:entry][:state] = address[:state] if address[:state].present?
+                item[:entry][:country_or_region] = address[:country_or_region] if address[:country_or_region].present?
+                item[:entry][:postal_code] = address[:postal_code] if address[:postal_code].present?
                 item
               end
             when :phone_numbers
               item_parameters[key] = value.map do |num|
                 item = { entry: {} }
                 item[:entry][:key] = num[:key] if num[:key].present?
-                item[:entry][:text] = num[:text]
+                item[:entry][:text] = num[:text] if num[:text].present?
                 item
               end
             else
